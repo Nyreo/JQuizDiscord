@@ -1,43 +1,40 @@
-'use strict'
+'use strict';
 
-require('dotenv').config()
+// sys
+require('dotenv').config();
+const log = console.log;
 
-// fs
-const fs = require('fs')
+// custom imports
+const setup = require('./setup');
 
-// terminal commands
-const chalk = require('chalk')
-const log = console.log
+// standard imports
+const chalk = require('chalk');
 
 // discord imports
-const {Client, MessageEmbed, Collection} = require('discord.js')
+const { Client } = require('discord.js');
+
+// config imports
+const { prefix, commandsDir } = require('./config.json');
 
 // creating the client
-const bot = new Client()
-bot.commands = new Collection()
-
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('js'))
-
-for (const file of commandFiles) {
-  const command = require(`./commands/${file}`)
-
-  bot.commands.set(command.name, command)
-}
-
-log(bot.commands)
+const bot = new Client();
+// loading bot commands
+bot.commands = setup.loadCommands(commandsDir);
 
 // crucial ready event, once this is complete the bot will react to events
-bot.on("ready", () => {
-  console.log(`Logged in as ${chalk.blue(bot.user.tag)}!`)
-})
+bot.on('ready', () => {
+	log(`Logged in as ${chalk.blue(bot.user.tag)}!`);
+});
 
 bot.on('message', message => {
 
-  log(`Message Received - ${message.content} from ${chalk.underline(message.author.tag)}!`)
+	log(`Message Received - ${message.content} from ${chalk.underline(message.author.tag)}!`);
 
-  if(bot.commands.get(message.content)) {
-    bot.commands.get(message.content).execute(message)
-  }
+	if (message.content.startsWith(prefix)) {
+		if (bot.commands.get(message.content)) {
+			bot.commands.get(message.content).execute(message);
+		}
+	}
 });
 
-bot.login(process.env.CLIENT_TOKEN)
+bot.login(process.env.CLIENT_TOKEN);
