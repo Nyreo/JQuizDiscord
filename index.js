@@ -1,5 +1,6 @@
 'use strict'
 
+require('dotenv').config()
 const Discord = require("discord.js")
 const client = new Discord.Client()
 client.on("ready", () => {
@@ -10,4 +11,6 @@ client.on("message", msg => {
     msg.reply("Pong!")
   }
 })
-client.login("")
+
+
+client.login(process.env.CLIENT_TOKEN)
