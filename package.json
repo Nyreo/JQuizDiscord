@@ -4,7 +4,7 @@
   "description": "Basic quiz bot build for discord using JS.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npx nodemon index.js"
   },
   "repository": {
     "type": "git",
