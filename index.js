@@ -30,10 +30,15 @@ bot.on('message', message => {
 
 	log(`Message Received - ${message.content} from ${chalk.underline(message.author.tag)}!`);
 
-	if (message.content.startsWith(prefix)) {
-		if (bot.commands.get(message.content)) {
-			bot.commands.get(message.content).execute(message);
-		}
+	if(!message.content.startsWith(prefix) || message.author.bot) return;
+
+	const args = message.content.slice(prefix.length).split(' ');
+	const command = args.shift().toLowerCase();
+
+	log(`\tCommand: ${command}\n\tArgs: ${args}`);
+
+	if (bot.commands.get(message.content)) {
+		bot.commands.get(message.content).execute(message);
 	}
 });
 
