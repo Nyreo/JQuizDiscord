@@ -14,7 +14,7 @@ const loadCommands = (commandsDir) => {
 		commands.set(command.name, command);
 	}
 
-	log(`identified ${commands.size} commands...`);
+	log(`identified ${commands.size} command(s)...`);
 
 	return commands;
 };

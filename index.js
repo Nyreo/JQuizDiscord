@@ -30,15 +30,38 @@ bot.on('message', message => {
 
 	log(`Message Received - ${message.content} from ${chalk.underline(message.author.tag)}!`);
 
+	// check if the message is meant for the bot
 	if(!message.content.startsWith(prefix) || message.author.bot) return;
 
+	// seperate message into command and arguments
 	const args = message.content.slice(prefix.length).split(' ');
-	const command = args.shift().toLowerCase();
+	const commandName = args.shift().toLowerCase();
 
-	log(`\tCommand: ${command}\n\tArgs: ${args}`);
+	// check if the command exits, return otherwise
+	log(`\tCommand: ${commandName}\n\tArgs: ${args}`);
 
-	if (bot.commands.get(message.content)) {
-		bot.commands.get(message.content).execute(message);
+	const command = bot.commands.get(commandName);
+
+	if (command) {
+		// check if the command needs args
+		if(command.args && !args.length) {
+			command.execute(message, args);
+		}
+		else if(!command.args) {
+			command.execute(message);
+		}
+		else {
+			let reply = `You didn't provide any arguments, ${message.author}!`;
+
+			if(command.usage) {
+				reply += `\nAn example of that command would be ${command.name} ${command.usage}`;
+			}
+
+			return message.channel.send(reply);
+		}
+	}
+	else {
+		message.reply(`Sorry, that command does not exist, if you are having trouble, try the ${prefix}help commmand!`);
 	}
 });
 
