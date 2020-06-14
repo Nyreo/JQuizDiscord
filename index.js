@@ -44,13 +44,11 @@ bot.on('message', message => {
 
 	if (command) {
 		// check if the command needs args
-		if(command.args && !args.length) {
+		if(command.args && args.length) {
 			command.execute(message, args);
-		}
-		else if(!command.args) {
+		} else if(!command.args) {
 			command.execute(message);
-		}
-		else {
+		} else {
 			let reply = `You didn't provide any arguments, ${message.author}!`;
 
 			if(command.usage) {
@@ -59,8 +57,7 @@ bot.on('message', message => {
 
 			return message.channel.send(reply);
 		}
-	}
-	else {
+	} else {
 		message.reply(`Sorry, that command does not exist, if you are having trouble, try the ${prefix}help commmand!`);
 	}
 });
