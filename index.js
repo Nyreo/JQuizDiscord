@@ -42,9 +42,6 @@ bot.on('message', message => {
 
 	const command = bot.commands.get(commandName);
 
-	console.log(args.length);
-	console.log(!args.length);
-
 	if (command) {
 		// check if the command needs args
 		if(command.args && args.length) {
