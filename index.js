@@ -24,6 +24,7 @@ bot.commands = setup.loadCommands(commandsDir);
 // crucial ready event, once this is complete the bot will react to events
 bot.on('ready', () => {
 	log(`Logged in as ${chalk.blue(bot.user.tag)}!`);
+	log(chalk.green('--------------\nREADY TO RECEIVE COMMANDS\n--------------'));
 });
 
 bot.on('message', message => {
