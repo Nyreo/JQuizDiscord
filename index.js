@@ -2,7 +2,6 @@
 
 // sys
 require('dotenv').config();
-const log = console.log;
 
 // custom imports
 const setup = require('./setup');
@@ -18,18 +17,21 @@ const { prefix, commandsDir } = require('./config.json');
 
 // creating the client
 const bot = new Client();
+
+
+
 // loading bot commands
 bot.commands = setup.loadCommands(commandsDir);
 
 // crucial ready event, once this is complete the bot will react to events
 bot.on('ready', () => {
-	log(`Logged in as ${chalk.blue(bot.user.tag)}!`);
-	log(chalk.green('--------------\nREADY TO RECEIVE COMMANDS\n--------------'));
+	console.log(`Logged in as ${chalk.blue(bot.user.tag)}!`);
+	console.log(chalk.green('--------------\nREADY TO RECEIVE COMMANDS\n--------------'));
 });
 
 bot.on('message', message => {
 
-	log(`Message Received - ${message.content} from ${chalk.underline(message.author.tag)}!`);
+	console.log(`Message Received - ${message.content} from ${chalk.underline(message.author.tag)}!`);
 
 	// check if the message is meant for the bot
 	if(!message.content.startsWith(prefix) || message.author.bot) return;
@@ -39,7 +41,7 @@ bot.on('message', message => {
 	const commandName = args.shift().toLowerCase();
 
 	// check if the command exits, return otherwise
-	log(`\tCommand: ${commandName}\n\tArgs: ${args}`);
+	console.log(`\tCommand: ${commandName}\n\tArgs: ${args}`);
 
 	const command = bot.commands.get(commandName);
 

@@ -1,4 +1,5 @@
 {
     "prefix" : "!",
-    "commandsDir" : "./commands"
+    "commandsDir" : "./commands",
+    "maxPlayers" : 10
 }

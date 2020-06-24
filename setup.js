@@ -2,7 +2,6 @@
 
 const fs = require('fs');
 const { Collection } = require('discord.js');
-const log = console.log;
 
 const loadCommands = (commandsDir) => {
 	const commands = new Collection();
@@ -14,7 +13,7 @@ const loadCommands = (commandsDir) => {
 		commands.set(command.name, command);
 	}
 
-	log(`identified ${commands.size} command(s)...`);
+	console.log(`identified ${commands.size} command(s)...`);
 
 	return commands;
 };
