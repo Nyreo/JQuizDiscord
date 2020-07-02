@@ -1,6 +1,7 @@
 module.exports = {
 	name: 'help',
 	description: 'provides help on the available commands',
+	usage: '(optional)<command name>',
 	execute(message, args) {
 		const { commands } = message.client;
 		let command = args.shift();
@@ -13,10 +14,9 @@ module.exports = {
 		if(command && commands.get(command)) {
 			command = commands.get(command);
 
-			data.push('Info on that command:');
-			data.push(command.description);
+			data.push(` that command ${command.description}.`);
 
-			if(command.usage) data.push(command.usage);
+			if(command.usage) data.push(`\nUsage: ${command.name} ${command.usage}`);
 
 			return message.reply(data, { split:true });
 		} else {

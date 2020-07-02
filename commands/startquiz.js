@@ -7,9 +7,9 @@ const { Quiz } = require('../structs/quiz');
 
 module.exports = {
 	name: 'startquiz',
-	description: 'Creates a quiz for people to join!',
+	description: 'creates a quiz for people to join',
 	args: true,
-	usage: '<question count> <max plaeyrs>',
+	usage: '<question count> <max players>',
 	execute(message, args) {
 		const [questionCount, maxPlayers] = args;
 
