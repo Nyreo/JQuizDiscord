@@ -1,7 +1,7 @@
 const Keyv = require('keyv');
 
-const games = new Keyv();
+const quizzes = new Keyv();
 
 module.exports = {
-	games,
+	quizzes,
 };
