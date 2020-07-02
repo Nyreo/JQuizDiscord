@@ -18,8 +18,6 @@ const { prefix, commandsDir } = require('./config.json');
 // creating the client
 const bot = new Client();
 
-
-
 // loading bot commands
 bot.commands = setup.loadCommands(commandsDir);
 
@@ -50,7 +48,7 @@ bot.on('message', message => {
 		if(command.args && args.length) {
 			command.execute(message, args);
 		} else if(!command.args) {
-			command.execute(message);
+			command.execute(message, args);
 		} else {
 			let reply = `You didn't provide any arguments, ${message.author}!`;
 
