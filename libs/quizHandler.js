@@ -25,4 +25,7 @@ module.exports = {
 			.then(() => true)
 			.catch(() => false);
 	},
+	fetchQuiz: (guildId) => {
+		return quizzes.get(guildId);
+	},
 };
