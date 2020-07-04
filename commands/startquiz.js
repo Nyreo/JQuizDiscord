@@ -2,8 +2,8 @@ const QuizHandler = require('../libs/quizHandler');
 
 const { quizzes } = require('../storage');
 
-const { Player } = require('../structs/player');
 const { Quiz } = require('../structs/quiz');
+const quizHandler = require('../libs/quizHandler');
 
 module.exports = {
 	name: 'startquiz',
@@ -26,13 +26,12 @@ module.exports = {
 				} else {
 					// create new quiz and add message author as the host.
 					const newQuiz = new Quiz(guild.id, maxPlayers, questionCount);
-					const host = new Player(author.id, {}, true);
 
-					if(!newQuiz.addPlayer(host)) return message.channel.send('There was an error setting up the quiz.');
-
-					console.log(newQuiz);
+					if(!quizHandler.addPlayer(newQuiz, author.id, true)) return message.channel.send('There was an error setting up the quiz.');
 
 					quizzes.set(guild.id, newQuiz);
+
+					console.log(newQuiz);
 
 					// create fancy embed message?
 					return message.channel
