@@ -1,10 +1,10 @@
-const QuizHandler = require('../libs/quizHandler');
+const Discord = require('discord.js');
 
-const { quizzes } = require('../storage');
+const QuizHandler = require('../libs/quizHandler');
 
 const { Quiz } = require('../structs/quiz');
 
-const Discord = require('discord.js');
+const config = require('../config.json');
 
 module.exports = {
 	name: 'startquiz',
@@ -14,11 +14,10 @@ module.exports = {
 		const guild = message.guild;
 		const author = message.author;
 
-		quizzes.get(guild.id)
+		QuizHandler.fetchQuiz(guild.id)
 			.then(existingQuiz => {
 				if(existingQuiz) {
-					message.channel.send('There is already a quiz going on!');
-					return false;
+					return message.channel.send('There is already a quiz going on!');
 				} else {
 					// create new quiz and add message author as the host.
 					const userFilter = m => m.author.id == author.id;
@@ -44,30 +43,66 @@ module.exports = {
 									// actually create the quiz
 									const newQuiz = new Quiz(guild.id, maxPlayers, questionCount, 0);
 
+									// COMMENT OUT FOR TESTING
 									if(!QuizHandler.addPlayer(newQuiz, author.id, true)) return message.channel.send('There was a problem setting up the quiz :(');
 
-									quizzes.set(guild.id, newQuiz);
+									QuizHandler.createQuiz(guild.id, newQuiz);
 
 									return newQuiz;
 								})
 								.then(newQuiz => {
+									// creation message
 									const completionEmbed = new Discord.MessageEmbed()
-										.setColor('#0099ff')
+										.setColor('#1aff66')
 										.setTitle('Quiz Creation Complete!')
 										.setDescription('Your quiz has been succesfully set up!')
 										.addFields(
 											{ name: 'Max Players', value: newQuiz.maxPlayers, inline: true },
 											{ name: 'Question Count', value: newQuiz.questionCount, inline:true },
 										)
-										.addField('How to Join?', 'Players can now join the quiz by typing !joinquiz.');
+										.addField('How to Join?', 'Players can now join the quiz by typing !join.');
 
-									return message.channel.send(completionEmbed);
+									message.channel.send(completionEmbed);
+
+									return newQuiz;
 								})
-								.catch(err => console.log(err));
+								.then(newQuiz => {
+									// set timer for quiz to begin and get players
+									message.channel.send(`The quiz will begin in ${config.defaultSetupTime / 1000} seconds.`);
+
+									const joinFilter = m => m.content.includes('join') && !(m.author.id in Object.keys(newQuiz.players));
+
+									const joinCollector = message.channel.createMessageCollector(joinFilter, { time : config.defaultSetupTime });
+
+									joinCollector.on('collect', m => {
+										const player = m.author;
+
+										if(QuizHandler.addPlayer(newQuiz, player.id)) {
+											const currentPlayers = Object.keys(newQuiz.players).length;
+											message.channel.send(`${player.username} has entered the quiz! (${currentPlayers}/${newQuiz.maxPlayers})`);
+											// check if max capacity left
+											if(currentPlayers == newQuiz.maxPlayers) joinCollector.stop('Max players reached...');
+										}
+									});
+
+									joinCollector.on('end', collected => {
+										message.channel.send('The quiz will begin shortly!');
+									});
+								})
+								.catch(err => {
+									console.log(err);
+									return message.channel.send('There was a problem setting up the quiz.');
+								});
 						})
-						.catch(err => console.log(err));
+						.catch(err => {
+							console.log(err);
+							return message.channel.send('There was a problem setting up the quiz.');
+						});
 				}
 			})
-			.catch(err => console.log(err));
+			.catch(err => {
+				console.log(err);
+				return message.channel.send('There was a problem setting up the quiz.');
+			});
 	},
 };
