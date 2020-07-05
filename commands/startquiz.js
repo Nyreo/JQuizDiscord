@@ -43,10 +43,8 @@ module.exports = {
 									// actually create the quiz
 									const newQuiz = new Quiz(guild.id, maxPlayers, questionCount, 0);
 
-									// COMMENT OUT FOR TESTING
-									if(!QuizHandler.addPlayer(newQuiz, author.id, true)) return message.channel.send('There was a problem setting up the quiz :(');
-
-									QuizHandler.createQuiz(guild.id, newQuiz);
+									// COMMENT OUT FOR TESTING -- adds creator to player pool
+									// if(!QuizHandler.addPlayer(newQuiz, author.id, true)) return message.channel.send('There was a problem setting up the quiz :(');
 
 									return newQuiz;
 								})
@@ -70,10 +68,11 @@ module.exports = {
 									// set timer for quiz to begin and get players
 									message.channel.send(`The quiz will begin in ${config.defaultSetupTime / 1000} seconds.`);
 
-									const joinFilter = m => m.content.includes('join') && !(m.author.id in Object.keys(newQuiz.players));
+									const joinFilter = m => m.content.includes('join') && !m.author.bot && !(m.author.id in Object.keys(newQuiz.players));
 
 									const joinCollector = message.channel.createMessageCollector(joinFilter, { time : config.defaultSetupTime });
 
+									// TODO: has some major flaws :(
 									joinCollector.on('collect', m => {
 										const player = m.author;
 
@@ -87,6 +86,13 @@ module.exports = {
 
 									joinCollector.on('end', collected => {
 										message.channel.send('The quiz will begin shortly!');
+
+										// get questions
+										QuizHandler.buildQuestionBase(newQuiz);
+										// create storage entity
+										QuizHandler.createQuiz(guild.id, newQuiz);
+										// begin the quiz
+										QuizHandler.beginQuiz(guild.id, message.channel);
 									});
 								})
 								.catch(err => {
