@@ -5,16 +5,12 @@ const { quizzes } = require('../storage');
 const { Quiz } = require('../structs/quiz');
 const quizHandler = require('../libs/quizHandler');
 
+const quizQuestions = ['How many players would you like?', 'How many questions would you like?'];
+
 module.exports = {
 	name: 'startquiz',
 	description: 'creates a quiz for people to join',
-	args: true,
-	usage: '<question count> <max players>',
-	execute(message, args) {
-		const [questionCount, maxPlayers] = args;
-
-		if(!questionCount || !maxPlayers) return message.channel.send('Please enter the correct arguments for this command!');
-
+	execute(message) {
 		const guild = message.guild;
 		const author = message.author;
 
@@ -25,17 +21,44 @@ module.exports = {
 					return false;
 				} else {
 					// create new quiz and add message author as the host.
-					const newQuiz = new Quiz(guild.id, maxPlayers, questionCount);
+					// const newQuiz = new Quiz(guild.id, maxPlayers, questionCount);
 
-					if(!quizHandler.addPlayer(newQuiz, author.id, true)) return message.channel.send('There was an error setting up the quiz.');
+					const userFilter = m => m.author.id == author.id;
 
-					quizzes.set(guild.id, newQuiz);
+					let maxPlayers;
+					let questionCount;
 
-					console.log(newQuiz);
+					message.channel.send('How many players would you like?');
 
-					// create fancy embed message?
-					return message.channel
-						.send(`A new quiz has been created!\n\tMax Players: ${maxPlayers}\n\tQuestions: ${questionCount}\nJoin now by typing !joinquiz`);
+					message.channel.awaitMessages(userFilter, { max: 1, time: 60000, error:['time'] })
+						.then(collectedMaxPlayers => {
+							// need to validate
+							maxPlayers = collectedMaxPlayers.first().content;
+
+							message.channel.send('How many questions would you like?');
+
+							message.channel.awaitMessages(userFilter, { max: 1, time: 60000, error: ['time'] })
+								.then(collectedQuestionCount => {
+									// need to validate
+									questionCount = collectedQuestionCount.first().content;
+								})
+								.then(() => {
+									// actually create the quiz
+									const newQuiz = new Quiz(guild.id, maxPlayers, questionCount, 0);
+
+									if(!quizHandler.addPlayer(newQuiz, author.id, true)) return message.channel.send('There was a problem setting up the quiz :(');
+
+									quizzes.set(guild.id, newQuiz);
+
+									return newQuiz;
+								})
+								.then(newQuiz => {
+									message.channel
+										.send(`A new quiz has been created!\n\tMax Players: ${newQuiz.maxPlayers}\n\tQuestions: ${newQuiz.questionCount}\nOther players can now join by typing !joinquiz.`);
+								})
+								.catch(err => console.log(err));
+						})
+						.catch(err => console.log(err));
 				}
 			})
 			.catch(err => console.log(err));
