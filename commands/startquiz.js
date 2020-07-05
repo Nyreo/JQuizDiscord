@@ -3,13 +3,13 @@ const QuizHandler = require('../libs/quizHandler');
 const { quizzes } = require('../storage');
 
 const { Quiz } = require('../structs/quiz');
-const quizHandler = require('../libs/quizHandler');
 
-const quizQuestions = ['How many players would you like?', 'How many questions would you like?'];
+const Discord = require('discord.js');
 
 module.exports = {
 	name: 'startquiz',
 	description: 'creates a quiz for people to join',
+	aliases: [],
 	execute(message) {
 		const guild = message.guild;
 		const author = message.author;
@@ -21,8 +21,6 @@ module.exports = {
 					return false;
 				} else {
 					// create new quiz and add message author as the host.
-					// const newQuiz = new Quiz(guild.id, maxPlayers, questionCount);
-
 					const userFilter = m => m.author.id == author.id;
 
 					let maxPlayers;
@@ -46,15 +44,24 @@ module.exports = {
 									// actually create the quiz
 									const newQuiz = new Quiz(guild.id, maxPlayers, questionCount, 0);
 
-									if(!quizHandler.addPlayer(newQuiz, author.id, true)) return message.channel.send('There was a problem setting up the quiz :(');
+									if(!QuizHandler.addPlayer(newQuiz, author.id, true)) return message.channel.send('There was a problem setting up the quiz :(');
 
 									quizzes.set(guild.id, newQuiz);
 
 									return newQuiz;
 								})
 								.then(newQuiz => {
-									message.channel
-										.send(`A new quiz has been created!\n\tMax Players: ${newQuiz.maxPlayers}\n\tQuestions: ${newQuiz.questionCount}\nOther players can now join by typing !joinquiz.`);
+									const completionEmbed = new Discord.MessageEmbed()
+										.setColor('#0099ff')
+										.setTitle('Quiz Creation Complete!')
+										.setDescription('Your quiz has been succesfully set up!')
+										.addFields(
+											{ name: 'Max Players', value: newQuiz.maxPlayers, inline: true },
+											{ name: 'Question Count', value: newQuiz.questionCount, inline:true },
+										)
+										.addField('How to Join?', 'Players can now join the quiz by typing !joinquiz.');
+
+									return message.channel.send(completionEmbed);
 								})
 								.catch(err => console.log(err));
 						})
