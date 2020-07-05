@@ -84,13 +84,13 @@ module.exports = {
 										}
 									});
 
-									joinCollector.on('end', collected => {
+									joinCollector.on('end', async collected => {
 										message.channel.send('The quiz will begin shortly!');
 
 										// get questions
-										QuizHandler.buildQuestionBase(newQuiz);
+										await QuizHandler.buildQuestionBase(newQuiz);
 										// create storage entity
-										QuizHandler.createQuiz(guild.id, newQuiz);
+										await QuizHandler.createQuiz(guild.id, newQuiz);
 										// begin the quiz
 										QuizHandler.beginQuiz(guild.id, message.channel);
 									});

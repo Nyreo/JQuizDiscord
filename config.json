@@ -4,5 +4,5 @@
     "defaultMinPlayers" : 2,
     "defaultMaxPlayers" : 10,
     "defaultQuestionCount" : 10,
-    "defaultSetupTime" : 10000
+    "defaultSetupTime" : 5000
 }

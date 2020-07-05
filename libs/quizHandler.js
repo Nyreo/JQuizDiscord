@@ -1,11 +1,15 @@
 const axios = require('axios');
 const base_url = 'https://opentdb.com/api.php?type=multiple&';
 
+const Entities = require('html-entities').AllHtmlEntities;
+
 const { quizzes, players } = require('../storage');
 
 const defaultPlayer = {
 	score: 0,
 };
+
+const entities = new Entities();
 
 module.exports = {
 	// amount, type, category, difficulty
@@ -37,6 +41,19 @@ module.exports = {
 	},
 	beginQuiz: (guildId, channel) => {
 		// starts an existing quiz
-		return channel.send('The quiz has begun!!!');
+		quizzes.get(guildId)
+			.then(quiz => {
+				// test - delete
+				for(const data of quiz.questions) {
+					const dq = entities.decode(data.question);
+
+					channel.send(dq);
+				}
+				console.log(quiz);
+			})
+			.catch(err => {
+				channel.send('There was an issue with starting the quiz...');
+				console.log(err);
+			});
 	},
 };
