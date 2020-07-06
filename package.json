@@ -4,7 +4,8 @@
   "description": "Basic quiz bot build for discord using JS.",
   "main": "index.js",
   "scripts": {
-    "start": "npx nodemon index.js"
+    "start": "npx nodemon index.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "eslint": "^7.0.0",
+    "jest": "^26.1.0",
     "nodemon": "^2.0.3"
   }
 }

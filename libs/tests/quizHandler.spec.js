@@ -1,0 +1,1 @@
+const QuizHandler = require('../quizHandler');
