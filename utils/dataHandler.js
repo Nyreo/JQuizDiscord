@@ -3,18 +3,15 @@
 module.exports = {
 	// implementation of fisher-yates shuffle
 	arrayShuffle: array => {
-		const copy = [];
-		let n = array.length, i;
+		let m = array.length, t, i;
 
-		while(n) {
-			i = Math.floor(Math.random() * array.length);
+		while(m) {
+			i = Math.floor(Math.random() * m--);
 
-			if(i in array) {
-				copy.push(array[i]);
-				delete array[i];
-				n--;
-			}
+			t = array[m];
+			array[m] = array[i];
+			array[i] = t;
 		}
-		return copy;
+		return array;
 	},
 };
