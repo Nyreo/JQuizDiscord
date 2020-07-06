@@ -1,9 +1,14 @@
+'use strict';
+
 const axios = require('axios');
 const base_url = 'https://opentdb.com/api.php?type=multiple&';
 
 const Entities = require('html-entities').AllHtmlEntities;
 
 const { quizzes, players } = require('../storage');
+
+const DataHandler = require('../utils/dataHandler');
+const MessageHandler = require('../utils/messageHandler');
 
 const defaultPlayer = {
 	score: 0,
@@ -44,10 +49,18 @@ module.exports = {
 		quizzes.get(guildId)
 			.then(quiz => {
 				// test - delete
-				for(const data of quiz.questions) {
-					const dq = entities.decode(data.question);
+				for(const questionData of quiz.questions) {
+					const question = entities.decode(questionData.question);
 
-					channel.send(dq);
+					const correctAnswer = questionData.correct_answer;
+					let answers = questionData.incorrect_answers.push(correctAnswer);
+					answers = DataHandler.arrayShuffle(answers);
+
+					const questionMessage = MessageHandler.create.questionMessage(question, answers);
+
+					channel.send(questionMessage);
+
+					break;
 				}
 				console.log(quiz);
 			})
