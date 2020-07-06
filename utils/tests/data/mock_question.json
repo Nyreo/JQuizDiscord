@@ -1,0 +1,125 @@
+{
+	"response_code": 0,
+	"results": [
+	  {
+		"category": "Entertainment: Music",
+		"type": "multiple",
+		"difficulty": "medium",
+		"question": "Which band had hits in 1975 with the songs, &#039;One Of These Nights&#039; &amp; &#039;Lyin Eyes&#039;?",
+		"correct_answer": "The Eagles",
+		"incorrect_answers": [
+		  "Fools Gold",
+		  "The Doobie Brothers",
+		  "Fleetwood Mac"
+		]
+	  },
+	  {
+		"category": "Science & Nature",
+		"type": "multiple",
+		"difficulty": "medium",
+		"question": "To the nearest minute, how long does it take for light to travel from the Sun to the Earth?",
+		"correct_answer": "8 Minutes",
+		"incorrect_answers": [
+		  "6 Minutes",
+		  "2 Minutes",
+		  "12 Minutes"
+		]
+	  },
+	  {
+		"category": "Entertainment: Music",
+		"type": "multiple",
+		"difficulty": "medium",
+		"question": "What genre of EDM is the Dutch DJ, musician, and remixer Armin van Buuren most well-known for?",
+		"correct_answer": "Trance",
+		"incorrect_answers": [
+		  "House",
+		  "Drum and Bass",
+		  "Dubstep"
+		]
+	  },
+	  {
+		"category": "Science: Computers",
+		"type": "multiple",
+		"difficulty": "medium",
+		"question": "While Apple was formed in California, in which western state was Microsoft founded?",
+		"correct_answer": "New Mexico",
+		"incorrect_answers": [
+		  "Washington",
+		  "Colorado",
+		  "Arizona"
+		]
+	  },
+	  {
+		"category": "Entertainment: Video Games",
+		"type": "multiple",
+		"difficulty": "easy",
+		"question": "What year was the game Dishonored released?",
+		"correct_answer": "2012",
+		"incorrect_answers": [
+		  "2011",
+		  "2008",
+		  "2013"
+		]
+	  },
+	  {
+		"category": "Entertainment: Music",
+		"type": "multiple",
+		"difficulty": "hard",
+		"question": "&quot;All the Boys&quot; by Panic! At the Disco was released as a bonus track on what album?",
+		"correct_answer": "Too Weird To Live, Too Rare To Die!",
+		"incorrect_answers": [
+		  "A Fever You Can&#039;t Sweat Out",
+		  "Death Of A Bachelor",
+		  "Vices &amp; Virtues"
+		]
+	  },
+	  {
+		"category": "Entertainment: Musicals & Theatres",
+		"type": "multiple",
+		"difficulty": "hard",
+		"question": "After England, more Shakespeare plays are set in this present day country than in any other.",
+		"correct_answer": "Italy",
+		"incorrect_answers": [
+		  "United States",
+		  "Greece",
+		  "France"
+		]
+	  },
+	  {
+		"category": "Entertainment: Video Games",
+		"type": "multiple",
+		"difficulty": "medium",
+		"question": "When was the video game publisher &quot;Ubisoft&quot; founded ?",
+		"correct_answer": "March 1986",
+		"incorrect_answers": [
+		  "April 1990",
+		  "June 2001",
+		  "August 1956"
+		]
+	  },
+	  {
+		"category": "Sports",
+		"type": "multiple",
+		"difficulty": "medium",
+		"question": "Which of the following pitchers was named National League Rookie of the Year for the 2013 season?",
+		"correct_answer": "Jose Fernandez",
+		"incorrect_answers": [
+		  "Jacob deGrom",
+		  "Shelby Miller",
+		  "Matt Harvey"
+		]
+	  },
+	  {
+		"category": "Entertainment: Cartoon & Animations",
+		"type": "multiple",
+		"difficulty": "easy",
+		"question": "In The Simpsons, which war did Seymour Skinner serve in the USA Army as a Green Beret?",
+		"correct_answer": "Vietnam War",
+		"incorrect_answers": [
+		  "World War 2",
+		  "World War 1",
+		  "Cold War"
+		]
+	  }
+	]
+  }

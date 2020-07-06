@@ -6,6 +6,7 @@ module.exports = {
 	// builds embedded messages
 	create: {
 		quizCreationMessage: (quiz) => {
+
 			const embed = new Discord.MessageEmbed()
 				.setColor('#1aff66')
 				.setTitle('Quiz Creation Complete!')
@@ -18,6 +19,9 @@ module.exports = {
 			return embed;
 		},
 		questionMessage: (number, question, answers) => {
+			// validate input -- move to new file?
+			if(number === undefined || question === undefined || answers === undefined) throw Error('One or more of the arguments is empty');
+			if(typeof number != 'number' || typeof question != 'string' || typeof answers != 'object') throw TypeError('invalid type inputted');
 
 			const answerFields = answers.map((answer, index) => {
 				return { name: index + 1, value: answer, inline:true };
