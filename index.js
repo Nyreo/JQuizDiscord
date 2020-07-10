@@ -3,11 +3,11 @@
 // sys
 require('dotenv').config();
 
-// custom imports
+// setup
 const setup = require('./setup');
 
-// standard imports
-const chalk = require('chalk');
+// utils
+const logger = require('./utils/logger');
 
 // discord imports
 const { Client } = require('discord.js');
@@ -21,16 +21,19 @@ const bot = new Client();
 // loading bot commands
 bot.commands = setup.loadCommands(commandsDir);
 
+// TODO:
+// add alias inclusion for command selection !med!
+
 // crucial ready event, once this is complete the bot will react to events
 bot.on('ready', () => {
-	console.log(`Logged in as ${chalk.blue(bot.user.tag)}!`);
-	console.log(chalk.green('--------------\nREADY TO RECEIVE COMMANDS\n--------------'));
+	logger.console.notification(`Logged in as ${bot.user.tag}`);
+	logger.console.success('Loading succesful! Ready to receive commands.');
 });
 
 bot.on('message', message => {
 
-	console.log(`Message Received - ${message.content} from ${chalk.underline(message.author.tag)}!`);
-
+	// console.log(`Message Received - ${message.content} from ${chalk.underline(message.author.tag)}!`);
+	logger.console.message(message.content, message.author.tag);
 	// check if the message is meant for the bot
 	if(!message.content.startsWith(prefix) || message.author.bot) return;
 
@@ -39,7 +42,7 @@ bot.on('message', message => {
 	const commandRequest = args.shift().toLowerCase();
 
 	// check if the command exits, return otherwise
-	console.log(`\tCommand: ${commandRequest}\n\tArgs: ${args}`);
+	// console.log(`\tCommand: ${commandRequest}\n\tArgs: ${args}`);
 
 	const command = bot.commands.get(commandRequest);
 
@@ -49,17 +52,7 @@ bot.on('message', message => {
 			command.execute(message, args);
 		} else if(!command.args) {
 			command.execute(message, args);
-		} else {
-			let reply = `You didn't provide any arguments, ${message.author}!`;
-
-			if(command.usage) {
-				reply += `\nAn example of that command would be ${command.name} ${command.usage}`;
-			}
-
-			return message.channel.send(reply);
 		}
-	} else {
-		message.reply(`Sorry, that command does not exist, if you are having trouble, try the ${prefix}help commmand!`);
 	}
 });
 

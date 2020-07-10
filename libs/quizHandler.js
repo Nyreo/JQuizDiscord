@@ -46,6 +46,9 @@ module.exports = {
 	},
 	beginQuiz: (guildId, channel) => {
 		// use awaitMessages for finding the right answers?
+		// or
+		// use reactions and try and remove the reaction once it has been added?
+		
 		// starts an existing quiz
 		quizzes.get(guildId)
 			.then(quiz => {

@@ -38,5 +38,6 @@ module.exports = {
 				.addFields(answerFields);
 			return embed;
 		},
+		helpMessage: () => 1,
 	},
 };

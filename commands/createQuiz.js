@@ -8,11 +8,12 @@ const { Quiz } = require('../structs/quiz');
 const config = require('../config.json');
 
 // TODO IDEAS:
-// maybe standardise responses in a separate library? !low!
+// standardise responses in a separate library !low!
 // standardise console messages (easier for development) !medium!
 // no way of cancelling the creation of a quiz (maybe the host entered the details wrong) !high!
 // have a quizmaster rank option for creating permissions? !low!
 // add setup enumerate codes? !low!
+// add optional naming option for quizzes? !low!
 
 module.exports = {
 	name: 'createquiz',
