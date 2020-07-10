@@ -2,6 +2,12 @@
 
 const Discord = require('discord.js');
 
+const config = require('../config.json');
+
+// TODO
+// helpMessage !med!
+
+
 module.exports = {
 	// builds embedded messages
 	create: {
@@ -16,8 +22,8 @@ module.exports = {
 					{ name: 'Question Count', value: quiz.questionCount, inline:true },
 				)
 				.addFields(
-					{ name: 'How to join?', value: 'Players can join by typing "joinquiz" in chat!' },
-					{ name: 'How to cancel?', value: 'The host can cancel the quiz by tying "cancelquiz" in chat' },
+					{ name: 'How to join?', value: `Players can join by typing ${config.prefix}joinquiz in chat!` },
+					{ name: 'How to cancel?', value: `The host can cancel the quiz during setup by tying ${config.prefix}cancel in chat` },
 				);
 
 			return embed;
