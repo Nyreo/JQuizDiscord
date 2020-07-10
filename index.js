@@ -36,12 +36,12 @@ bot.on('message', message => {
 
 	// seperate message into command and arguments
 	const args = message.content.slice(prefix.length).split(' ');
-	const commandName = args.shift().toLowerCase();
+	const commandRequest = args.shift().toLowerCase();
 
 	// check if the command exits, return otherwise
-	console.log(`\tCommand: ${commandName}\n\tArgs: ${args}`);
+	console.log(`\tCommand: ${commandRequest}\n\tArgs: ${args}`);
 
-	const command = bot.commands.get(commandName);
+	const command = bot.commands.get(commandRequest);
 
 	if (command) {
 		// check if the command needs args

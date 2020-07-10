@@ -45,6 +45,7 @@ module.exports = {
 		return quizzes.set(guildId, quiz);
 	},
 	beginQuiz: (guildId, channel) => {
+		// use awaitMessages for finding the right answers?
 		// starts an existing quiz
 		quizzes.get(guildId)
 			.then(quiz => {

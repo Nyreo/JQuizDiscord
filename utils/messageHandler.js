@@ -15,7 +15,11 @@ module.exports = {
 					{ name: 'Max Players', value: quiz.maxPlayers, inline: true },
 					{ name: 'Question Count', value: quiz.questionCount, inline:true },
 				)
-				.addField('How to Join?', 'Players can now join the quiz by typing !join.');
+				.addFields(
+					{ name: 'How to join?', value: 'Players can join by typing "joinquiz" in chat!' },
+					{ name: 'How to cancel?', value: 'The host can cancel the quiz by tying "cancelquiz" in chat' },
+				);
+
 			return embed;
 		},
 		questionMessage: (number, question, answers) => {
