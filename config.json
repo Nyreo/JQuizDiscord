@@ -6,7 +6,7 @@
 	"defaultMinQuestionCount" : 5,
 	"defaultMaxQuestionCount" : 25,
     "defaultQuestionCount" : 10,
-	"defaultSetupTime" : 5000,
+	"defaultSetupTime" : 10000,
 	"joinQuizCmd": "joinquiz",
 	"cancelQuizCmd" : "cancelQuiz"
 }

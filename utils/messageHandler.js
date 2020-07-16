@@ -8,6 +8,35 @@ const config = require('../config.json');
 // helpMessage !med!
 // updatelobby !med!
 
+// takes raw player quiz data
+const generateLobbyField = (players, maxPlayers) => {
+	const playerData = Object.values(players);
+
+	// 1. Nyreo
+	// 2. -empty-
+	// 3. -empty-
+
+	const lobbyField = { name: 'Lobby', value : '' };
+
+	for(let i = 0; i < maxPlayers; i++) {
+		lobbyField.value += `\n${i + 1}. `;
+
+		if(playerData[i]) lobbyField.value += playerData[i].username;
+		else lobbyField.value += '-empty-';
+	}
+
+	return lobbyField;
+};
+
+const generateAnswerList = answers => {
+
+	const answerFields = answers.map((answer, index) => {
+		return { name: index + 1, value: answer, inline:true };
+	});
+
+	return answerFields;
+};
+
 
 module.exports = {
 	// builds embedded messages
@@ -34,9 +63,7 @@ module.exports = {
 			if(number === undefined || question === undefined || answers === undefined) throw Error('One or more of the arguments is empty');
 			if(typeof number != 'number' || typeof question != 'string' || typeof answers != 'object') throw TypeError('invalid type inputted');
 
-			const answerFields = answers.map((answer, index) => {
-				return { name: index + 1, value: answer, inline:true };
-			});
+			const answerFields = generateAnswerList(answers);
 
 			const embed = new Discord.MessageEmbed()
 				.setColor('#4fc7e8')
@@ -46,8 +73,28 @@ module.exports = {
 			return embed;
 		},
 		helpMessage: () => 1,
+		// players array from quiz
+		lobbyMessage: (players, maxPlayers) => {
+
+			const lobbyField = generateLobbyField(players, maxPlayers);
+
+			const embed = new Discord.MessageEmbed()
+				.setColor('#dbe043')
+				.setTitle('Quiz Lobby')
+				.setDescription('Players who have joined the quiz.')
+				.addField(lobbyField.name, lobbyField.value);
+
+			return embed;
+		},
 	},
 	edit : {
-		updateLobby: (msg, players) => 1,
+		updateLobby: (msg, players, maxPlayers) => {
+
+			const newLobbyEmbed = module.exports.create.lobbyMessage(players, maxPlayers);
+
+			msg.edit(newLobbyEmbed)
+				.then(() => console.log('Lobby message updated'))
+				.catch(() => console.error);
+		},
 	},
 };

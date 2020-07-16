@@ -9,7 +9,6 @@ const config = require('../config.json');
 
 // TODO IDEAS:
 // standardise responses in a separate library !low!
-// standardise console messages (easier for development) !medium!
 // have a quizmaster rank option for creating permissions? !low!
 // add setup enumerate codes? !low!
 // add optional naming option for quizzes? !low!
@@ -32,8 +31,7 @@ module.exports = {
 					// create new quiz and add message author as the host.
 					const authorFilter = m => m.author.id == author.id;
 
-					let maxPlayers;
-					let questionCount;
+					let maxPlayers, questionCount;
 
 					message.channel.send('How many players would you like?');
 
@@ -58,7 +56,11 @@ module.exports = {
 									const newQuiz = new Quiz(guild.id, maxPlayers, questionCount);
 
 									// COMMENT OUT FOR TESTING ALONE :( -- adds creator to player pool
-									// if(!QuizHandler.addPlayer(newQuiz, author.id, true)) return message.channel.send('There was a problem setting up the quiz :(');
+									// try {
+									// 	QuizHandler.addPlayer(newQuiz, author, true);
+									// } catch(error) {
+									// 	return message.channel.send('There was a problem setting up the quiz :(');
+									// }
 
 									return newQuiz;
 								})
@@ -70,12 +72,17 @@ module.exports = {
 
 									return newQuiz;
 								})
-								.then(newQuiz => {
+								.then(async newQuiz => {
 									// set timer for quiz to begin and get players
 									message.channel.send(`The quiz will begin in ${config.defaultSetupTime / 1000} seconds.`);
 
+									// raw lobby message
+									const lobbyMessage = MessageHandler.create.lobbyMessage(newQuiz.players, newQuiz.maxPlayers);
+									// reference to the message that was sent
+									const lobbyRef = await message.channel.send(lobbyMessage);
+
 									// setup join collector
-									const joinFilter = m => m.content.startsWith(`${config.prefix}join`) && !m.author.bot && !(m.author.id in Object.keys(newQuiz.players));
+									const joinFilter = m => m.content.startsWith(`${config.prefix}join`) && !m.author.bot;
 									const joinCollector = message.channel.createMessageCollector(joinFilter, { time : config.defaultSetupTime });
 
 									// setup cancel collector
@@ -85,11 +92,20 @@ module.exports = {
 									joinCollector.on('collect', m => {
 										const player = m.author;
 
-										if(QuizHandler.addPlayer(newQuiz, player.id)) {
+										try {
+											QuizHandler.addPlayer(newQuiz, player);
+
+											// send join confirmation join message
 											const currentPlayers = Object.keys(newQuiz.players).length;
 											message.channel.send(`${player.username} has entered the quiz! (${currentPlayers}/${newQuiz.maxPlayers})`);
+
+											// update the lobby message
+											MessageHandler.edit.updateLobby(lobbyRef, newQuiz.players, newQuiz.maxPlayers);
+
 											// check if max capacity left
 											if(currentPlayers == newQuiz.maxPlayers) joinCollector.stop('max_players_reached');
+										} catch(error) {
+											console.log(error.message);
 										}
 									});
 

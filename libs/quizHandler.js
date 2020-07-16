@@ -3,8 +3,6 @@
 const axios = require('axios');
 const base_url = 'https://opentdb.com/api.php?type=multiple&';
 
-const Entities = require('html-entities').AllHtmlEntities;
-
 const { quizzes, players } = require('../storage');
 
 const DataHandler = require('../utils/dataHandler');
@@ -14,6 +12,7 @@ const defaultPlayer = {
 	score: 0,
 };
 
+const Entities = require('html-entities').AllHtmlEntities;
 const entities = new Entities();
 
 module.exports = {
@@ -24,15 +23,20 @@ module.exports = {
 
 		quiz.questions = questionData.data.results;
 	},
-	addPlayer: (quiz, playerId, isHost = false) => {
-		// adds a new player to the storage entity
-		if(Object.keys(quiz.players).length >= quiz.maxPlayers) return false;
-		quiz.players[playerId] = { ...defaultPlayer, isHost };
-		return true;
+	addPlayer: (quiz, player, isHost = false) => {
+		// adds a new player to the quiz storage entity
+
+		// check if max players has been reached
+		if(Object.keys(quiz.players).length >= quiz.maxPlayers) throw Error('FULL_PLAYER_CAPACITY');
+		// check if the player has already joined the quiz
+		else if(quiz.players[player.id]) throw Error('PLAYER_ALREADY_EXISTS');
+
+		// safe for the player to join
+		quiz.players[player.id] = { ...defaultPlayer, username: player.username, isHost };
 	},
 	cancelQuiz: (guildId) => {
 		// deletes an existing quiz from the storage entity
-		return quizzes.delete(guildId)
+		return quizzes.delete(guildId);
 	},
 	fetchQuiz: (guildId) => {
 		// fetches data on a guilds quiz from the data storage entity
