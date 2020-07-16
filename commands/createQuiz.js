@@ -11,8 +11,7 @@ const config = require('../config.json');
 // standardise responses in a separate library !low!
 // have a quizmaster rank option for creating permissions? !low!
 // add setup enumerate codes? !low!
-// add optional naming option for quizzes? !low!
-// show joining lobby - edit mesasge when someone joins !med!
+// add optional naming for quizzes? !low!
 
 module.exports = {
 	name: 'createquiz',
@@ -22,7 +21,7 @@ module.exports = {
 		const guild = message.guild;
 		const author = message.author;
 
-		// not sure if ths promise nesting is the best way to go about this...
+		// fairly deep promise nesting, could be improved?
 		QuizHandler.fetchQuiz(guild.id)
 			.then(existingQuiz => {
 				if(existingQuiz) {
@@ -55,7 +54,7 @@ module.exports = {
 									// actually create the quiz
 									const newQuiz = new Quiz(guild.id, maxPlayers, questionCount);
 
-									// COMMENT OUT FOR TESTING ALONE :( -- adds creator to player pool
+									// COMMENT OUT FOR TESTING ALONE :( -- adds creator of quiz to player pool
 									// try {
 									// 	QuizHandler.addPlayer(newQuiz, author, true);
 									// } catch(error) {
@@ -65,7 +64,7 @@ module.exports = {
 									return newQuiz;
 								})
 								.then(newQuiz => {
-									// send message to user
+									// send completion message to host user
 									const quizCompletionMsg = MessageHandler.create.quizCreationMessage(newQuiz);
 
 									message.channel.send(quizCompletionMsg);
@@ -73,12 +72,11 @@ module.exports = {
 									return newQuiz;
 								})
 								.then(async newQuiz => {
-									// set timer for quiz to begin and get players
-									message.channel.send(`The quiz will begin in ${config.defaultSetupTime / 1000} seconds.`);
+									// set timer for quiz to begin and for players to join
 
-									// raw lobby message
+									// generate raw lobby message
 									const lobbyMessage = MessageHandler.create.lobbyMessage(newQuiz.players, newQuiz.maxPlayers);
-									// reference to the message that was sent
+									// store reference to the lobby message that was sent
 									const lobbyRef = await message.channel.send(lobbyMessage);
 
 									// setup join collector
@@ -89,20 +87,24 @@ module.exports = {
 									const cancelFilter = m => m.content.startsWith(`${config.prefix}cancel`) && m.author.id == author.id;
 									const cancelCollector = message.channel.createMessageCollector(cancelFilter, { time : config.defaultSetupTime });
 
+									// send setup time warning message
+									message.channel.send(`The quiz will begin in ${config.defaultSetupTime / 1000} seconds.`);
+
 									joinCollector.on('collect', m => {
+										// someone wants to join the quiz
 										const player = m.author;
 
 										try {
 											QuizHandler.addPlayer(newQuiz, player);
 
-											// send join confirmation join message
+											// send join confirmation message
 											const currentPlayers = Object.keys(newQuiz.players).length;
 											message.channel.send(`${player.username} has entered the quiz! (${currentPlayers}/${newQuiz.maxPlayers})`);
 
-											// update the lobby message
+											// update the lobby message with the new player
 											MessageHandler.edit.updateLobby(lobbyRef, newQuiz.players, newQuiz.maxPlayers);
 
-											// check if max capacity left
+											// check if max capacity has been reached (end collector if so)
 											if(currentPlayers == newQuiz.maxPlayers) joinCollector.stop('max_players_reached');
 										} catch(error) {
 											console.log(error.message);
@@ -110,25 +112,25 @@ module.exports = {
 									});
 
 									joinCollector.on('end', async (m, reason) => {
-
+										// the joining process has concluded, either forcefully or naturally
 										if(reason == 'setup_cancelled') return message.channel.send('Quiz setup cancelled.');
 										// check there is enough players to actually start the quiz
 										if(Object.keys(newQuiz.players).length < config.defaultMinPlayers) return message.channel.send('Sorry, not enough people joined your quiz :(');
 
-										message.channel.send('The quiz will begin shortly!');
+										// no issues detected, begin quiz setup
+										message.channel.send('The quiz will begin after a brief setup period. Get READY!');
 
-										// get questions
+										// get quiz questions
 										await QuizHandler.buildQuestionBase(newQuiz);
 										// create storage entity
 										await QuizHandler.createQuiz(guild.id, newQuiz);
 										// begin the quiz
 										return QuizHandler.beginQuiz(guild.id, message.channel);
-
 									});
 
-									// not sure if this is the best way to do this but it works ;)
 									// if cancel message received from host, stop the join collector
 									cancelCollector.on('collect', () => {
+										// force stop the creation of this quiz
 										joinCollector.stop('setup_cancelled');
 									});
 
