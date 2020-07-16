@@ -75,11 +75,11 @@ module.exports = {
 									message.channel.send(`The quiz will begin in ${config.defaultSetupTime / 1000} seconds.`);
 
 									// setup join collector
-									const joinFilter = m => m.content.includes('joinquiz') && !m.author.bot && !(m.author.id in Object.keys(newQuiz.players));
+									const joinFilter = m => m.content.startsWith(`${config.prefix}join`) && !m.author.bot && !(m.author.id in Object.keys(newQuiz.players));
 									const joinCollector = message.channel.createMessageCollector(joinFilter, { time : config.defaultSetupTime });
 
 									// setup cancel collector
-									const cancelFilter = m => m.content.includes('cancel') && m.author.id == author.id;
+									const cancelFilter = m => m.content.startsWith(`${config.prefix}cancel`) && m.author.id == author.id;
 									const cancelCollector = message.channel.createMessageCollector(cancelFilter, { time : config.defaultSetupTime });
 
 									joinCollector.on('collect', m => {

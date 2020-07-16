@@ -6,6 +6,7 @@ const config = require('../config.json');
 
 // TODO
 // helpMessage !med!
+// updatelobby !med!
 
 
 module.exports = {
@@ -22,8 +23,8 @@ module.exports = {
 					{ name: 'Question Count', value: quiz.questionCount, inline:true },
 				)
 				.addFields(
-					{ name: 'How to join?', value: `Players can join by typing ${config.prefix}joinquiz in chat!` },
-					{ name: 'How to cancel?', value: `The host can cancel the quiz during setup by tying ${config.prefix}cancel in chat` },
+					{ name: 'How to join?', value: `Players can join by typing ${config.prefix}join in chat!` },
+					{ name: 'How to cancel?', value: `The host can cancel the quiz during setup by tying ${config.prefix}cancel in chat.` },
 				);
 
 			return embed;
@@ -45,5 +46,8 @@ module.exports = {
 			return embed;
 		},
 		helpMessage: () => 1,
+	},
+	edit : {
+		updateLobby: (msg, players) => 1,
 	},
 };

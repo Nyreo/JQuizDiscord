@@ -8,9 +8,6 @@ module.exports = {
 
 		const data = [];
 
-		console.log(command);
-		console.log(commands);
-
 		if(command && commands.get(command)) {
 			command = commands.get(command);
 

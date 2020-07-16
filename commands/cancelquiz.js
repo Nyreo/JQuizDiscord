@@ -1,14 +1,14 @@
-const quizHandler = require('../libs/quizHandler');
+const QuizHandler = require('../libs/quizHandler');
 
 module.exports = {
-	name: 'cancelquiz',
-	description: 'cancels the current quiz',
+	name: 'stopquiz',
+	description: 'stops the current quiz',
 	execute(message) {
 		const guild = message.guild;
 		const author = message.author;
 
 		// check if the author is the host of the quiz
-		return quizHandler.fetchQuiz(guild.id)
+		return QuizHandler.fetchQuiz(guild.id)
 			.then(quiz => {
 				if(quiz) {
 					// quiz exists
@@ -16,8 +16,9 @@ module.exports = {
 
 					if(isHost) {
 						// author is the host
-						quizHandler.cancelQuiz(guild.id);
-						return message.channel.send('The quiz has been successfully deleted.');
+						return QuizHandler.cancelQuiz(guild.id)
+							.then(() => message.channel.send('The quiz has been successfully deleted.'))
+							.catch(() => message.channel.send('Sorry, I could not complete your request :('));
 					} else {
 						// author is not the host
 						return message.channel.send('You need to be the host to cancel a quiz.');
@@ -27,6 +28,6 @@ module.exports = {
 					return message.channel.send('There is currently not a quiz going on!');
 				}
 			})
-			.catch(err => message.channel.send('An error occurred'));
+			.catch(() => message.channel.send('Sorry, something went wrong :('));
 	},
 };
