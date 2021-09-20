@@ -1,30 +1,35 @@
+const { SlashCommandBuilder } = require('@discordjs/builders');
+
 module.exports = {
-	name: 'help',
-	description: 'provides help on the available commands',
+	data: new SlashCommandBuilder()
+		.setName('help')
+		.setDescription('Provides the user with help executing'),
 	usage: '(optional)<command name>',
-	execute(message, args) {
-		const { commands } = message.client;
-		let command = args.shift();
+	async execute(interaction) {
 
-		const data = [];
+		await interaction.reply('Test');
+		// const { commands } = message.client;
+		// let command = args.shift();
 
-		console.log(commands.get(command));
+		// const data = [];
 
-		if(command && commands.get(command)) {
-			command = commands.get(command);
+		// console.log(commands.get(command));
 
-			data.push(` that command ${command.description}.`);
+		// if(command && commands.get(command)) {
+		// 	command = commands.get(command);
 
-			if(command.usage) data.push(`\nUsage: ${command.name} ${command.usage}`);
+		// 	data.push(` that command ${command.description}.`);
 
-			return message.reply(data, { split:true });
-		} else {
+		// 	if(command.usage) data.push(`\nUsage: ${command.name} ${command.usage}`);
 
-			console.log('could not find command');
-			data.push('Here\'s a list of all my commands: ');
-			data.push(commands.map(_command => `${_command.name} -> ${_command.description}`).join('\n'));
+		// 	return message.reply(data, { split:true });
+		// } else {
 
-			return message.author.send(data.toString());
-		}
+		// 	console.log('could not find command');
+		// 	data.push('Here\'s a list of all my commands: ');
+		// 	data.push(commands.map(_command => `${_command.name} -> ${_command.description}`).join('\n'));
+
+		// 	return message.author.send(data.toString());
+		// }
 	},
 };

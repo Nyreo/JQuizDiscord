@@ -1,28 +1,32 @@
 'use strict';
 
 // sys
+const fs = require('fs');
 require('dotenv').config();
-
-// setup
-// const setup = require('./setup');
 
 // utils
 const logger = require('./utils/logger');
 
 // discord imports
-const { Client, Intents } = require('discord.js');
-
-// config imports
-const { prefix } = require('./config.json');
+const { Client, Collection, Intents } = require('discord.js');
 
 // creating the client
 const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+bot.commands = new Collection();
 
-// loading bot commands
-// bot.commands = setup.loadCommands(commandsDir);
+// fetch commands file names
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
-// TODO:
-// add alias inclusion for command selection !med!
+for (const file of commandFiles) {
+	const command = require(`./commands/${file}`);
+	// Set a new item in the Collection
+	// With the key as the command name and the value as the exported module
+
+	if(!command.data) continue;
+	bot.commands.set(command.data.name, command);
+}
+
+console.log(bot.commands);
 
 // crucial ready event, once this is complete the bot will react to events
 bot.on('ready', () => {
@@ -30,28 +34,25 @@ bot.on('ready', () => {
 	logger.console.success('Loading succesful! Ready to receive commands.');
 });
 
-bot.on('messageCreate', message => {
+// if the user makes a request using one of the slash commands
+bot.on('interactionCreate', async interaction => {
 
-	logger.console.message(message.content, message.author.tag);
-	// check if the message is meant for the bot
-	if(!message.content.startsWith(prefix) || message.author.bot) return;
+	logger.console.message(interaction.commandName, 'Received Command');
+	// command is not available
+	if(!interaction.isCommand) return;
 
-	// seperate message into command and arguments
-	const args = message.content.slice(prefix.length).split(' ');
-	const commandRequest = args.shift().toLowerCase();
+	// console.log(interaction);
+	// get command
+	const command = bot.commands.get(interaction.commandName);
 
-	// check if the command exits, return otherwise
-	console.log(`\tCommand: ${commandRequest}\n\tArgs: ${args}`);
+	// not a valid command
+	if(!command) return;
 
-	const command = bot.commands.get(commandRequest);
-
-	if (command) {
-		// check if the command needs args
-		if(command.args && args.length) {
-			command.execute(message, args);
-		} else if(!command.args) {
-			command.execute(message, args);
-		}
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+		console.log(error);
+		await interaction.reply({ context: 'There was an error handling this command', ephermal: true });
 	}
 });
 

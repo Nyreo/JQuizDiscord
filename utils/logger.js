@@ -9,7 +9,7 @@ const log = console.log;
 
 module.exports = {
 	console: {
-		message: (msg, tag) => {
+		message: (msg, tag = '') => {
 			log(chalk.bgBlue.white.bold('MESSAGE'), `-${tag}-`, msg);
 		},
 		notification: (msg) => {
