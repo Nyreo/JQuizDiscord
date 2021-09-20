@@ -12,8 +12,7 @@ const defaultPlayer = {
 	score: 0,
 };
 
-const Entities = require('html-entities').AllHtmlEntities;
-const entities = new Entities();
+const entities = require('html-entities').AllHtmlEntities;
 
 module.exports = {
 	// amount, type, category, difficulty

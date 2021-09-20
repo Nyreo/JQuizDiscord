@@ -4,22 +4,22 @@
 require('dotenv').config();
 
 // setup
-const setup = require('./setup');
+// const setup = require('./setup');
 
 // utils
 const logger = require('./utils/logger');
 
 // discord imports
-const { Client } = require('discord.js');
+const { Client, Intents } = require('discord.js');
 
 // config imports
-const { prefix, commandsDir } = require('./config.json');
+const { prefix } = require('./config.json');
 
 // creating the client
-const bot = new Client();
+const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 // loading bot commands
-bot.commands = setup.loadCommands(commandsDir);
+// bot.commands = setup.loadCommands(commandsDir);
 
 // TODO:
 // add alias inclusion for command selection !med!
@@ -30,9 +30,8 @@ bot.on('ready', () => {
 	logger.console.success('Loading succesful! Ready to receive commands.');
 });
 
-bot.on('message', message => {
+bot.on('messageCreate', message => {
 
-	// console.log(`Message Received - ${message.content} from ${chalk.underline(message.author.tag)}!`);
 	logger.console.message(message.content, message.author.tag);
 	// check if the message is meant for the bot
 	if(!message.content.startsWith(prefix) || message.author.bot) return;
@@ -42,7 +41,7 @@ bot.on('message', message => {
 	const commandRequest = args.shift().toLowerCase();
 
 	// check if the command exits, return otherwise
-	// console.log(`\tCommand: ${commandRequest}\n\tArgs: ${args}`);
+	console.log(`\tCommand: ${commandRequest}\n\tArgs: ${args}`);
 
 	const command = bot.commands.get(commandRequest);
 
@@ -56,4 +55,4 @@ bot.on('message', message => {
 	}
 });
 
-bot.login(process.env.CLIENT_TOKEN);
+bot.login(process.env.TOKEN);

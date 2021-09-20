@@ -8,6 +8,8 @@ module.exports = {
 
 		const data = [];
 
+		console.log(commands.get(command));
+
 		if(command && commands.get(command)) {
 			command = commands.get(command);
 
@@ -17,10 +19,12 @@ module.exports = {
 
 			return message.reply(data, { split:true });
 		} else {
-			data.push('Here\'s a list of all my commands: ');
-			data.push(commands.map(command => `${command.name} -> ${command.description}`).join('\n'));
 
-			return message.author.send(data, { split:true });
+			console.log('could not find command');
+			data.push('Here\'s a list of all my commands: ');
+			data.push(commands.map(_command => `${_command.name} -> ${_command.description}`).join('\n'));
+
+			return message.author.send(data.toString());
 		}
 	},
 };
