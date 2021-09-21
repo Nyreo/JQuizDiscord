@@ -1,35 +1,41 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('help')
-		.setDescription('Provides the user with help executing'),
-	usage: '(optional)<command name>',
+		.setDescription('Provides the user with help executing')
+		.addSubcommand(subcommand =>
+			subcommand
+				.setName('general')
+				.setDescription('receive a dm with general help and a list of available commands.')
+		)
+		.addSubcommand(subcommand =>
+			subcommand
+				.setName('specific')
+				.setDescription('Request help with a specific command!')
+				.addStringOption(option =>
+					option
+						.setName('request')
+						.setDescription('The command you are requesting help for.'),
+				),
+		),
 	async execute(interaction) {
+		// fetch bot commands
+		const { commands } = interaction.client;
 
-		await interaction.reply('Test');
-		// const { commands } = message.client;
-		// let command = args.shift();
+		// check if request command was provided
+		const reqCommand = interaction.options.getString('request');
+		if(!reqCommand) {
+			// general help
+			interaction.user.send('test');
 
-		// const data = [];
-
-		// console.log(commands.get(command));
-
-		// if(command && commands.get(command)) {
-		// 	command = commands.get(command);
-
-		// 	data.push(` that command ${command.description}.`);
-
-		// 	if(command.usage) data.push(`\nUsage: ${command.name} ${command.usage}`);
-
-		// 	return message.reply(data, { split:true });
-		// } else {
-
-		// 	console.log('could not find command');
-		// 	data.push('Here\'s a list of all my commands: ');
-		// 	data.push(commands.map(_command => `${_command.name} -> ${_command.description}`).join('\n'));
-
-		// 	return message.author.send(data.toString());
-		// }
+			interaction.reply({ content: 'Help sent to your dms!', ephermal: true });
+		} else {
+			// specific help
+			const command = commands.get(reqCommand);
+			if(!command) {
+				await interaction.reply({ content: 'That command does not exist.', ephermal: true });
+			}
+			await interaction.reply({ content: `You are asking for help with the '${reqCommand}' command. Here is the command usage: ${command.data.description}` });
+		}
 	},
 };

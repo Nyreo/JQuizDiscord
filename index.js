@@ -17,6 +17,7 @@ bot.commands = new Collection();
 // fetch commands file names
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
+// load all available commands to the bot
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	// Set a new item in the Collection
@@ -26,7 +27,10 @@ for (const file of commandFiles) {
 	bot.commands.set(command.data.name, command);
 }
 
-console.log(bot.commands);
+console.log('List of loaded commands:');
+for(const key of bot.commands.keys()) {
+	console.log(key);
+}
 
 // crucial ready event, once this is complete the bot will react to events
 bot.on('ready', () => {
@@ -41,13 +45,15 @@ bot.on('interactionCreate', async interaction => {
 	// command is not available
 	if(!interaction.isCommand) return;
 
-	// console.log(interaction);
+	// console.log(interaction.options);
+
 	// get command
 	const command = bot.commands.get(interaction.commandName);
 
 	// not a valid command
 	if(!command) return;
 
+	// try to execute the command
 	try {
 		await command.execute(interaction);
 	} catch (error) {

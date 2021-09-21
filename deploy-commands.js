@@ -1,5 +1,10 @@
 'use strict';
 
+/*
+	Deploys the command schema to the discord server
+		- guild specific deployment
+*/
+
 require('dotenv').config();
 
 const fs = require('fs');
