@@ -24,6 +24,7 @@
     "@keyv/mysql": "^1.1.4",
     "axios": "^0.21.4",
     "chalk": "^4.1.2",
+    "dependency-check": "^4.1.0",
     "discord-api-types": "^0.23.1",
     "discord.js": "^13.1.0",
     "dotenv": "^10.0.0",

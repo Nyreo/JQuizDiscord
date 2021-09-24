@@ -1,13 +1,18 @@
 'use strict';
 
+// api request
 const axios = require('axios');
+// uri
 const base_url = 'https://opentdb.com/api.php?type=multiple&';
 
+// data storages -- temp
 const { quizzes, players } = require('../storage');
 
+// handlers
 const DataHandler = require('../utils/dataHandler');
 const MessageHandler = require('../utils/messageHandler');
 
+// default player object
 const defaultPlayer = {
 	score: 0,
 };
@@ -22,7 +27,7 @@ module.exports = {
 
 		quiz.questions = questionData.data.results;
 	},
-	addPlayer: (quiz, player, isHost = false) => {
+	addPlayer: async (quiz, player, isHost = false) => {
 		// adds a new player to the quiz storage entity
 
 		// check if max players has been reached
@@ -33,17 +38,22 @@ module.exports = {
 		// safe for the player to join
 		quiz.players[player.id] = { ...defaultPlayer, username: player.username, isHost };
 	},
-	cancelQuiz: (guildId) => {
+	cancelQuiz: async (guildId) => {
 		// deletes an existing quiz from the storage entity
 		return quizzes.delete(guildId);
 	},
-	fetchQuiz: (guildId) => {
+	fetchQuiz: async (guildId) => {
 		// fetches data on a guilds quiz from the data storage entity
 		return quizzes.get(guildId);
 	},
-	createQuiz: (guildId, quiz) => {
+	createQuiz: async (guildId, quiz) => {
 		// adds quiz data to the storage entity
-		return quizzes.set(guildId, quiz);
+		// returns the created quiz
+
+		// try fetch the quiz first
+		if(await quizzes.get(guildId)) throw new Error('A quiz for that server is already running!');
+
+		quizzes.set(guildId, quiz);
 	},
 	beginQuiz: (guildId, channel) => {
 		// use awaitMessages for finding the right answers?

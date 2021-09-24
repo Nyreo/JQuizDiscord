@@ -27,9 +27,10 @@ for (const file of commandFiles) {
 	bot.commands.set(command.data.name, command);
 }
 
+// echo loaded commands to console
 console.log('List of loaded commands:');
 for(const key of bot.commands.keys()) {
-	console.log(key);
+	console.log(`\t${key}`);
 }
 
 // crucial ready event, once this is complete the bot will react to events
