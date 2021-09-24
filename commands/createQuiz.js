@@ -2,6 +2,8 @@
 
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
+const wait = require('util').promisify(setTimeout);
+
 const QuizHandler = require('../libs/quizHandler');
 const MessageHandler = require('../utils/messageHandler');
 
@@ -52,7 +54,11 @@ module.exports = {
 		try {
 			await QuizHandler.createQuiz(guild.id, quiz);
 
-			interaction.reply('Successfully created the quiz.');
+			// quiz created.. send confirmation message
+			const confirmationEmbed = MessageHandler.create.quizCreationMessage(quiz);
+			interaction.reply({ embeds: [confirmationEmbed] });
+
+			await wait(1000);
 
 			// create lobby embed
 			const lobbyMsg = MessageHandler.create.lobbyMessage(quiz.players, quiz.maxPlayers);
@@ -68,7 +74,7 @@ module.exports = {
 
 			// setup cancel collector
 			const cancelFilter = m => m.content.startsWith('cancel') && m.author.id == author.id;
-			const cancelCollector = interaction.channel.createMessageCollector(cancelFilter, { time : config.defaultSetupTime });
+			const cancelCollector = interaction.channel.createMessageCollector({ filter: cancelFilter, time : config.defaultSetupTime });
 
 			joinCollector.on('collect', m => {
 				// user who wants to join the quiz
@@ -79,20 +85,28 @@ module.exports = {
 						logger.console.success(`Added player [${player.username}] to quiz [${quiz.guildId}]`);
 						MessageHandler.edit.updateLobby(lobbyRef, quiz.players, quiz.maxPlayers);
 					})
-					.catch(err => logger.console.error(err.message));
+					.catch(err => {
+						logger.console.error(err.message);
+
+						m.reply('You cannot join the quiz at this time.');
+					});
 			});
 
 			joinCollector.on('end', collected => {
 				console.log(`collected: ${collected.size} items.`);
 			});
 
-			cancelCollector.on('collect', () => {
+			cancelCollector.on('collect', m => {
 				logger.console.warning(`Quiz for guild [${quiz.guildId}] requesting setup cancellation... Shutting collectors down.`);
 				joinCollector.stop('Cancelled by host.');
 				cancelCollector.stop();
+
+				m.channel.send('Ongoing quiz has been cancelled by the host.');
+				QuizHandler.cancelQuiz(quiz.guildId);
 			});
 
 		} catch(error) {
+			console.error(error);
 			logger.console.error(error.message);
 			interaction.reply(error.message);
 		}

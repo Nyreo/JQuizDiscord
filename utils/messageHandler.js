@@ -2,8 +2,6 @@
 
 const Discord = require('discord.js');
 
-const config = require('../config.json');
-
 // TODO
 // helpMessage !med!
 // updatelobby !med!
@@ -43,17 +41,19 @@ module.exports = {
 	create: {
 		quizCreationMessage: (quiz) => {
 
+			console.log(quiz.maxPlayers, quiz.questionCount);
+
 			const embed = new Discord.MessageEmbed()
 				.setColor('#1aff66')
 				.setTitle('Quiz Creation Complete!')
 				.setDescription('Your quiz has been succesfully set up!')
 				.addFields(
-					{ name: 'Max Players', value: quiz.maxPlayers, inline: true },
-					{ name: 'Question Count', value: quiz.questionCount, inline:true },
+					{ name: 'Max Players', value: quiz.maxPlayers.toString(), inline: true },
+					{ name: 'Question Count', value: quiz.questionCount.toString(), inline:true },
 				)
 				.addFields(
-					{ name: 'How to join?', value: `Players can join by typing ${config.prefix}join in chat!` },
-					{ name: 'How to cancel?', value: `The host can cancel the quiz during setup by tying ${config.prefix}cancel in chat.` },
+					{ name: 'How to join?', value: 'Players can join by typing \'join\' in chat!' },
+					{ name: 'How to cancel?', value: 'The host can cancel the quiz during setup by tying \'cancel\' in chat.' },
 				);
 
 			return embed;
