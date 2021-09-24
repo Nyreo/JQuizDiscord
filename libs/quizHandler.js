@@ -31,12 +31,12 @@ module.exports = {
 		// adds a new player to the quiz storage entity
 
 		// check if max players has been reached
-		if(Object.keys(quiz.players).length >= quiz.maxPlayers) throw Error('FULL_PLAYER_CAPACITY');
+		if(Object.keys(quiz.players).length >= quiz.maxPlayers) throw Error('MAX_PLAYER_CAPACITY');
 		// check if the player has already joined the quiz
-		else if(quiz.players[player.id]) throw Error('PLAYER_ALREADY_EXISTS');
+		// else if(quiz.players[player.id]) throw Error('PLAYER_ALREADY_EXISTS');
 
 		// safe for the player to join
-		quiz.players[player.id] = { ...defaultPlayer, username: player.username, isHost };
+		quiz.players[Math.random() * 100] = { ...defaultPlayer, username: player.username, isHost };
 	},
 	cancelQuiz: async (guildId) => {
 		// deletes an existing quiz from the storage entity

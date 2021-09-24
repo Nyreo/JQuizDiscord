@@ -90,9 +90,12 @@ module.exports = {
 	edit : {
 		updateLobby: (msg, players, maxPlayers) => {
 
+			console.log(`[${Object.values(players).length}] - ${Object.values(players)}`);
+
 			const newLobbyEmbed = module.exports.create.lobbyMessage(players, maxPlayers);
 
-			msg.edit(newLobbyEmbed)
+
+			msg.edit({ embeds: [newLobbyEmbed] })
 				.then(() => console.log('Lobby message updated'))
 				.catch(() => console.error);
 		},

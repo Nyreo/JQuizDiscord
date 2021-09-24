@@ -1,12 +1,9 @@
 {
-    "prefix" : "!",
     "commandsDir" : "./commands",
     "defaultMinPlayers" : 2,
 	"defaultMaxPlayers" : 10,
 	"defaultMinQuestionCount" : 5,
 	"defaultMaxQuestionCount" : 25,
     "defaultQuestionCount" : 10,
-	"defaultSetupTime" : 10000,
-	"joinQuizCmd": "joinquiz",
-	"cancelQuizCmd" : "cancelQuiz"
+	"defaultSetupTime" : 30000
 }
